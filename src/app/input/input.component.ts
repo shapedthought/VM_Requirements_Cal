@@ -27,6 +27,9 @@ export class InputComponent implements OnInit {
   }
 
   onSubmit() {
+    if (this.outputItems.length > 0) {
+      this.outputItems = [];
+    }
     const data = this.envReqForm.value;
     this.pvmCPU = data.vCPU / data.vmQty;
     this.pvmGHz = data.GHz / data.vmQty;
