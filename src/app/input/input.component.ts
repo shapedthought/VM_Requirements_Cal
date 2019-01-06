@@ -1,5 +1,6 @@
-import { Component, OnInit, EventEmitter, Output } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FormGroup, FormControl, Validators } from '@angular/forms';
+import {DataService} from '../data.service';
 
 @Component({
   selector: 'app-input',
@@ -7,12 +8,11 @@ import {FormGroup, FormControl, Validators } from '@angular/forms';
   styleUrls: ['./input.component.css']
 })
 export class InputComponent implements OnInit {
-  outputItems = [];
   pvmCPU: number;
   pvmGHz: number;
-  pvmRam: number;
+  pvmRAM: number;
 
-  @Output() calSend = new EventEmitter<object>();
+
 
   envReqForm = new FormGroup({
     vmQty: new FormControl('', Validators.required),
@@ -21,23 +21,15 @@ export class InputComponent implements OnInit {
     ram: new FormControl('', Validators.required)
   });
 
-  constructor() { }
+  constructor(private dataService: DataService) { }
 
   ngOnInit() {
   }
 
   onSubmit() {
-    if (this.outputItems.length > 0) {
-      this.outputItems = [];
-    }
     const data = this.envReqForm.value;
     this.pvmCPU = data.vCPU / data.vmQty;
     this.pvmGHz = data.GHz / data.vmQty;
-    this.pvmRam = data.ram / data.vmQty;
-    this.outputItems.push(this.pvmCPU);
-    this.outputItems.push(this.pvmGHz);
-    this.outputItems.push(this.pvmRam);
-    this.calSend.emit(this.outputItems);
-    console.log(this.pvmCPU, this.pvmGHz, this.pvmRam);
-  }
-}
+    this.pvmRAM = data.ram / data.vmQty;
+    this.dataService.calculationUpdated.next({pvmCPU: this.pvmCPU, pvmGHz: this.pvmGHz, pvmRAM: this.pvmRAM });
+}}
